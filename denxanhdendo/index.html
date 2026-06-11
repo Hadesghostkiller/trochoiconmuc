@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò Chơi Con Mực Online</title>
+    <link rel="icon" type="image/png" href="res/anh/logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="hop_thoai_thong_bao" class="lop_phu_modal" style="display: none;">
+        <div class="khung_modal">
+            <h3 id="tieu_de_thong_bao">Trò chơi cho biết</h3>
+            <p id="noi_dung_thong_bao"></p>
+            <button id="nut_dong_thong_bao">XÁC NHẬN</button>
+        </div>
+    </div>
+
+    <div id="man_hinh_dang_nhap" class="khung_giao_dien">
+        <h2>SQUID GAME 2D</h2>
+        <input type="text" id="nhap_ten" placeholder="Nhập tên của bạn..." maxlength="15">
+        <button id="nut_vao_game">VÀO PHÒNG CHỜ</button>
+    </div>
+
+    <div id="man_hinh_phong_cho" class="khung_giao_dien" style="display: none;">
+        <h3 id="chao_mobi">Xin chào!</h3>
+        <button id="nut_doi_ten" style="width: auto; padding: 6px 15px; margin-bottom: 15px; font-size: 13px; background: #555;">ĐỔI TÊN</button>
+        <div class="khoi_chuc_nang">
+            <button id="nut_tao_phong">TẠO PHÒNG MỚI</button>
+            <p style="margin: 10px 0;">hoặc</p>
+            <input type="number" id="nhap_ma_phong" placeholder="Nhập mã 3 số...">
+            <button id="nut_tham_gia">THAM GIA</button>
+        </div>
+        <div id="thong_bao_loi" style="color: red; margin-top: 10px;"></div>
+    </div>
+
+    <div id="man_hinh_cho_doi_game" class="khung_giao_dien" style="display: none;">
+        <h2 id="hien_ma_phong">PHÒNG: ---</h2>
+        <p style="color: #aaa;">Danh sách người chơi đang ở đây:</p>
+        <ul id="danh_sach_cho_u"></ul>
+        
+        <button id="nut_chu_phong_bat_dau" style="display: none;">BẮT ĐẦU GAME</button>
+        <p id="txt_khach_doi" style="color: #ff007f; animation: blink 1s infinite; display: none;">Đang đợi chủ phòng bắt đầu...</p>
+    </div>
+
+    <div id="vung_chua_game" style="display: none;">
+        <canvas id="man_hinh_game" width="1280" height="720"></canvas>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+@font-face {
+    font-family: 'PixelKVN';
+    src: url('../font/kvn-97.ttf') format('truetype');
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PixelKVN', sans-serif; }
+
+body {
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    color: #fff;
+}
+
+.logo_game {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+    object-fit: contain;
+}
+
+.khung_giao_dien {
+    background: #252525;
+    padding: 30px;
+    border: 3px solid #ff007f;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 0, 127, 0.3);
+    width: 400px;
+}
+
+h2 { color: #ff007f; font-size: 32px; margin-bottom: 20px; }
+h3 { font-size: 20px; margin-bottom: 10px; color: #00ff00; }
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    border: 2px solid #555;
+    background: #111;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    outline: none;
+}
+input:focus { border-color: #ff007f; }
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #ff007f;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 10px;
+}
+button:hover { background: #e6006f; box-shadow: 0 0 10px #ff007f; }
+
+#danh_sach_cho_u {
+    background: #111;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+    text-align: left;
+    list-style: none;
+    max-height: 150px;
+    overflow-y: auto;
+}
+#danh_sach_cho_u li {
+    padding: 6px 0;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+#vung_chua_game {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    border: 4px solid #ff007f;
+    border-radius: 8px;
+    background-color: #000;
+}
+#man_hinh_game { display: block; image-rendering: pixelated; }
+
+.lop_phu_modal {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+}
+.khung_modal {
+    background: #222;
+    border: 3px solid #ffd700;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    width: 340px;
+    box-shadow: 0 0 15px #ffd700;
+}
+.khung_modal h3 { color: #ffd700; margin-bottom: 15px; font-size: 22px; }
+.khung_modal p { font-size: 16px; margin-bottom: 20px; color: #fff; line-height: 1.4; }
+.khung_modal button { background: #ffd700; color: #000; font-weight: bold; }
+.khung_modal button:hover { background: #cca100; box-shadow: 0 0 10px #ffd700; }
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }

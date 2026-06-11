@@ -1,0 +1,143 @@
+@font-face {
+    font-family: 'PixelKVN';
+    src: url('../font/kvn-97.ttf') format('truetype');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #111;
+    color: white;
+    font-family: 'PixelKVN', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#vung_chua_game {
+    position: relative;
+    box-shadow: 0 0 20px #000;
+}
+
+#man_hinh_game {
+    display: block;
+    background-color: #000;
+}
+
+#ui_thoat {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+#nut_thoat {
+    padding: 10px 20px;
+    background-color: #ff0044;
+    color: white;
+    border: none;
+    font-family: 'PixelKVN', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#ui_kinh {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: none;
+    text-align: center;
+}
+
+#luot_cua_ai {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #00ff00;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.nut_dieu_khien {
+    display: flex;
+    justify-content: center;
+}
+
+.nut_dieu_khien button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    border-radius: 10px;
+    margin: 0 10px;
+    cursor: pointer;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+.nut_dieu_khien button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.nut_dieu_khien button:active {
+    transform: scale(0.9);
+}
+
+.khung_giao_dien {
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid #ff007f;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 400px;
+    position: absolute;
+    z-index: 20;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.khung_giao_dien h2 {
+    color: #ff007f;
+    margin-top: 0;
+    font-size: 32px;
+}
+
+.khung_giao_dien ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    font-size: 20px;
+}
+
+.khung_giao_dien ul li {
+    margin: 10px 0;
+    padding: 10px;
+    background: #333;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.khung_giao_dien button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-family: 'PixelKVN', sans-serif;
+    font-size: 18px;
+    background: #ff007f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.lop_phu_modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;
+}
+.khung_modal {
+    background: #222; border: 2px solid #ff007f; padding: 20px; border-radius: 8px; text-align: center; min-width: 300px;
+}
+.khung_modal h3 { margin-top: 0; color: #ff007f; }
+.khung_modal button { margin-top: 15px; padding: 8px 16px; background: #ff007f; border: none; color: white; cursor: pointer; border-radius: 4px; font-family: 'PixelKVN';}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQUID GAME - Nhảy Kính</title>
+    <link rel="icon" type="image/png" href="../denxanhdendo/res/anh/logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="hop_thoai_thong_bao" class="lop_phu_modal" style="display: none;">
+        <div class="khung_modal">
+            <h3 id="tieu_de_thong_bao">Thông báo</h3>
+            <p id="noi_dung_thong_bao"></p>
+            <button id="nut_dong_thong_bao">XÁC NHẬN</button>
+        </div>
+    </div>
+
+    <div id="ui_thoat">
+        <button id="nut_thoat">THOÁT PHÒNG</button>
+    </div>
+    
+    <div id="ui_kinh">
+        <div id="luot_cua_ai">Đang chờ...</div>
+        <div class="nut_dieu_khien">
+            <button id="nut_len"><img src="../denxanhdendo/res/anh/muiten.png" style="transform: scaleY(-1); width: 60px;"></button>
+            <button id="nut_xuong"><img src="../denxanhdendo/res/anh/muiten.png" style="width: 60px;"></button>
+        </div>
+    </div>
+
+    <div id="man_hinh_xep_hang" class="khung_giao_dien" style="display: none;">
+        <h2>BẢNG XẾP HẠNG</h2>
+        <ul id="danh_sach_xep_hang"></ul>
+        <button id="nut_ve_sanh">VỀ SẢNH</button>
+    </div>
+
+    <div id="vung_chua_game">
+        <canvas id="man_hinh_game" width="1280" height="720"></canvas>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
