@@ -187,14 +187,40 @@ function cap_nhat_giao_dien_kinh() {
 
     if (roomData.game_ket_thuc_man2) {
         hien_thi_bang_xep_hang();
-        
-        if (isHost && !roomData.thoi_gian_xoa_phong) {
-            dbUpdate(dbRef(db, 'rooms/' + currentRoomId), { thoi_gian_xoa_phong: Date.now() });
-            setTimeout(() => {
-                dbRemove(dbRef(db, 'rooms/' + currentRoomId)).then(() => {
+
+        // Đếm số người đã qua đích an toàn ở màn 2
+        let so_nguoi_qua = Object.values(playersList).filter(x => x.man2_trang_thai === "QUA_DICH").length;
+
+        if (so_nguoi_qua > 0) {
+            // NẾU CÓ NGƯỜI SỐNG SÓT -> CHUYỂN SANG MÀN 3 (KÉO CO)
+            if (isHost && !roomData.chuyen_man_3) {
+                // Chủ phòng cập nhật cờ chuyển màn lên Firebase
+                dbUpdate(dbRef(db, 'rooms/' + currentRoomId), {chuyen_man_3: true});
+
+                // Đợi 5 giây (để xem kết quả) rồi nhảy sang thư mục keoco
+                setTimeout(() => {
+                    window.location.href = '../keoco/index.html?phong=' + currentRoomId;
+                }, 5000);
+            } else if (!isHost) {
+                // Các máy khách (Client) cũng sẽ tự động nhảy theo Host
+                setTimeout(() => {
+                    window.location.href = '../keoco/index.html?phong=' + currentRoomId;
+                }, 5000);
+            }
+        } else {
+            // NẾU KHÔNG AI SỐNG SÓT -> GAME OVER VÀ XÓA PHÒNG
+            if (isHost && !roomData.thoi_gian_xoa_phong) {
+                dbUpdate(dbRef(db, 'rooms/' + currentRoomId), {thoi_gian_xoa_phong: Date.now()});
+                setTimeout(() => {
+                    dbRemove(dbRef(db, 'rooms/' + currentRoomId)).then(() => {
+                        window.location.href = '../denxanhdendo/index.html'; // Về lại sảnh
+                    });
+                }, 8000);
+            } else if (!isHost) {
+                setTimeout(() => {
                     window.location.href = '../denxanhdendo/index.html';
-                });
-            }, 10000);
+                }, 8000);
+            }
         }
     }
 }
