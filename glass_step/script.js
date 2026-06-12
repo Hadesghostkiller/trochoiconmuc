@@ -1,5 +1,6 @@
 import { db } from '../denxanhdendo/firebase-config.js';
 import { ref as dbRef, update as dbUpdate, onValue as dbOnValue, remove as dbRemove, get as dbGet } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { bo_cau_hoi } from './question.js';
 
 const canvas = document.getElementById('man_hinh_game');
 const ctx = canvas.getContext('2d');
@@ -8,6 +9,19 @@ const anh_nen = new Image(); anh_nen.src = '../denxanhdendo/res/anh/glass_step_b
 const kinh_img = new Image(); kinh_img.src = '../denxanhdendo/res/anh/kinh1.png';
 const anh_nguoi_choi = new Image(); anh_nguoi_choi.src = '../denxanhdendo/res/anh/nhaiu.png';
 const am_thanh_kinh_vo = new Audio('../denxanhdendo/res/sound/glassbroken.mp3');
+const anh_goi_y = new Image(); anh_goi_y.src = '../denxanhdendo/res/anh/goiy_man2.png';
+const am_thanh_mua_goi_y = new Audio('../denxanhdendo/res/sound/boong.mp3');
+
+let nhan_vat_goi_y = {
+    x: 50, y: 150, startX: 50, startY: 150, targetX: 50, targetY: 150,
+    state: 'idle', // idle, moving_to_player, moving_to_start
+    frame: 0, lastFrameTime: 0,
+    width: 32.5, height: 32.5, speed: 2
+};
+
+let danh_sach_cau_hoi_random = [];
+let cau_hoi_hien_tai = 0;
+let ket_qua_tra_loi = [];
 
 let myId = localStorage.getItem("player_id");
 let myName = localStorage.getItem("player_name");
@@ -31,6 +45,9 @@ let played_broken_glasses = {};
 let localBrokenTimes = {};
 let localEventTimes = {};
 let isInitialLoad = true;
+
+let da_dung_goi_y_buoc_nay = false;
+let floatingTexts = [];
 
 const startGlassX = 350;
 const stepWidth = 75;
@@ -186,8 +203,6 @@ function cap_nhat_giao_dien_kinh() {
     }
 
     if (roomData.game_ket_thuc_man2) {
-        hien_thi_bang_xep_hang();
-
         // Đếm số người đã qua đích an toàn ở màn 2
         let so_nguoi_qua = Object.values(playersList).filter(x => x.man2_trang_thai === "QUA_DICH").length;
 
@@ -226,32 +241,182 @@ function cap_nhat_giao_dien_kinh() {
 }
 
 function hien_thi_bang_xep_hang() {
-    let m = document.getElementById('man_hinh_xep_hang');
-    if (m.style.display === 'block') return;
-    m.style.display = 'block';
-    document.getElementById('ui_thoat').style.display = 'none';
-    
-    let arr = Object.values(playersList).filter(p => p.trang_thai === "THANG" || p.diem > 0);
-    arr.sort((a, b) => {
-        let scoreA = (a.diem || 0) + (a.man2_diem || 0);
-        let scoreB = (b.diem || 0) + (b.man2_diem || 0);
-        return scoreB - scoreA; // Descending
-    });
-    
-    let html = "";
-    arr.forEach((p, idx) => {
-        let score = (p.diem || 0) + (p.man2_diem || 0);
-        let color = (p.id === myId) ? "#00ff00" : "white";
-        html += `<li style="color: ${color}"><span>#${idx+1} ${p.ten}</span> <span>${score} ĐIỂM</span></li>`;
-    });
-    
-    if (arr.length === 0) html = "<li style='text-align:center;'>Không có ai sống sót!</li>";
-    
-    document.getElementById('danh_sach_xep_hang').innerHTML = html;
+    // Không làm gì, chuyển bảng xếp hạng qua màn 3
 }
 
 document.getElementById('nut_len').addEventListener('click', () => xu_ly_nhay(1));
 document.getElementById('nut_xuong').addEventListener('click', () => xu_ly_nhay(0));
+
+// Logic Gợi ý
+let timer_tra_loi;
+let thoi_gian_con_lai = 30;
+let timer_ket_qua;
+
+canvas.addEventListener('click', (e) => {
+    if (nhan_vat_goi_y.state !== 'idle' || !roomData.glass_setup_done || roomData.game_ket_thuc_man2) return;
+    
+    let currentPlayerId = roomData.glass_queue ? roomData.glass_queue[roomData.current_turn_index] : null;
+    if (currentPlayerId !== myId) {
+        hien_thong_bao("Chỉ được dùng gợi ý khi tới lượt của bạn!");
+        return;
+    }
+
+    if (da_dung_goi_y_buoc_nay) {
+        hien_thong_bao("Bạn đã sử dụng gợi ý cho lượt đi này rồi!");
+        return;
+    }
+    
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const mouseX = (e.clientX - rect.left) * scaleX;
+    const mouseY = (e.clientY - rect.top) * scaleY;
+    
+    let hw = nhan_vat_goi_y.width;
+    let hh = nhan_vat_goi_y.height;
+    
+    if (mouseX >= nhan_vat_goi_y.x && mouseX <= nhan_vat_goi_y.x + hw &&
+        mouseY >= nhan_vat_goi_y.y && mouseY <= nhan_vat_goi_y.y + hh) {
+        
+        let p = playersList[myId];
+        if (p && p.man2_trang_thai === "DANG_CHO") {
+            nhan_vat_goi_y.state = 'moving_to_player';
+            nhan_vat_goi_y.targetX = p.x + (65 - hw) / 2; // Căn giữa theo người chơi
+            nhan_vat_goi_y.targetY = p.y + 65 + 30; // Đứng cách một khoảng xa ở dưới người chơi
+        }
+    }
+});
+
+document.getElementById('nut_khong_goi_y').addEventListener('click', () => {
+    document.getElementById('modal_xac_nhan_goi_y').style.display = 'none';
+    nhan_vat_goi_y.state = 'moving_to_start';
+});
+
+document.getElementById('nut_co_goi_y').addEventListener('click', () => {
+    document.getElementById('modal_xac_nhan_goi_y').style.display = 'none';
+    
+    da_dung_goi_y_buoc_nay = true;
+
+    // Phát âm thanh khi mua gợi ý
+    let am_thanh = am_thanh_mua_goi_y.cloneNode(true);
+    am_thanh.volume = 0.8;
+    am_thanh.play().catch(() => {});
+
+    // Trừ 40 điểm
+    let diem_hien_tai = playersList[myId].diem || 0;
+    dbUpdate(dbRef(db, `rooms/${currentRoomId}/players/${myId}`), { diem: diem_hien_tai - 40 });
+    
+    let p = playersList[myId];
+    if (p) {
+        floatingTexts.push({
+            text: "-40 ĐIỂM",
+            x: p.x + (p.width || 65) / 2,
+            y: p.y - 10,
+            opacity: 1.0
+        });
+    }
+
+    // Random 10 câu hỏi
+    let shuffled = [...bo_cau_hoi].sort(() => 0.5 - Math.random());
+    danh_sach_cau_hoi_random = shuffled.slice(0, 10);
+    cau_hoi_hien_tai = 0;
+    ket_qua_tra_loi = [];
+    
+    hien_thi_cau_hoi();
+});
+
+function hien_thi_cau_hoi() {
+    if (cau_hoi_hien_tai >= 10) {
+        document.getElementById('modal_cau_hoi_goi_y').style.display = 'none';
+        hien_thi_ket_qua_goi_y();
+        return;
+    }
+    
+    document.getElementById('modal_cau_hoi_goi_y').style.display = 'flex';
+    document.getElementById('tieu_de_cau_hoi').innerText = `Câu hỏi ${cau_hoi_hien_tai + 1}/10`;
+    
+    let q = danh_sach_cau_hoi_random[cau_hoi_hien_tai];
+    document.getElementById('noi_dung_cau_hoi').innerText = q.q;
+    
+    let vung_dap_an = document.getElementById('vung_dap_an');
+    vung_dap_an.innerHTML = '';
+    
+    q.a.forEach((ans, index) => {
+        let btn = document.createElement('button');
+        btn.innerText = ans;
+        btn.style.padding = '10px 20px';
+        btn.style.fontFamily = 'PixelKVN';
+        btn.style.cursor = 'pointer';
+        btn.onclick = () => xu_ly_tra_loi(index, q.c);
+        vung_dap_an.appendChild(btn);
+    });
+
+    thoi_gian_con_lai = 30;
+    document.getElementById('thoi_gian_tra_loi').innerText = `Thời gian: ${thoi_gian_con_lai}s`;
+    clearInterval(timer_tra_loi);
+    timer_tra_loi = setInterval(() => {
+        thoi_gian_con_lai--;
+        document.getElementById('thoi_gian_tra_loi').innerText = `Thời gian: ${thoi_gian_con_lai}s`;
+        if (thoi_gian_con_lai <= 0) {
+            clearInterval(timer_tra_loi);
+            xu_ly_tra_loi(-1, q.c); // Hết giờ bị tính là sai
+        }
+    }, 1000);
+}
+
+function xu_ly_tra_loi(index_chon, index_dung) {
+    clearInterval(timer_tra_loi);
+    if (index_chon === index_dung) {
+        ket_qua_tra_loi.push(true);
+    } else {
+        ket_qua_tra_loi.push(false);
+    }
+    cau_hoi_hien_tai++;
+    hien_thi_cau_hoi();
+}
+
+function hien_thi_ket_qua_goi_y() {
+    let seq = roomData.glass_sequence || [];
+    let ket_qua_str = [];
+    for (let i = 0; i < 10; i++) {
+        if (ket_qua_tra_loi[i]) {
+            ket_qua_str.push(seq[i]);
+        } else {
+            ket_qua_str.push("?");
+        }
+    }
+    
+    document.getElementById('chuoi_ket_qua_goi_y').innerText = ket_qua_str.join(" - ");
+    document.getElementById('modal_ket_qua_goi_y').style.display = 'flex';
+
+    let thoi_gian_hien_goi_y = 5;
+    let nut_dong = document.getElementById('nut_dong_ket_qua');
+    nut_dong.innerText = `ĐÃ HIỂU (${thoi_gian_hien_goi_y}s)`;
+    nut_dong.disabled = true;
+
+    clearInterval(timer_ket_qua);
+    timer_ket_qua = setInterval(() => {
+        thoi_gian_hien_goi_y--;
+        if (thoi_gian_hien_goi_y > 0) {
+            nut_dong.innerText = `ĐÃ HIỂU (${thoi_gian_hien_goi_y}s)`;
+        } else {
+            clearInterval(timer_ket_qua);
+            nut_dong.innerText = `ĐÃ HIỂU`;
+            nut_dong.disabled = false;
+            dong_modal_ket_qua(); // Tự động đóng gợi ý khi hết 5 giây
+        }
+    }, 1000);
+}
+
+function dong_modal_ket_qua() {
+    clearInterval(timer_ket_qua);
+    document.getElementById('modal_ket_qua_goi_y').style.display = 'none';
+    nhan_vat_goi_y.targetX = nhan_vat_goi_y.startX;
+    nhan_vat_goi_y.targetY = nhan_vat_goi_y.startY;
+    nhan_vat_goi_y.state = 'moving_to_start';
+}
+
+document.getElementById('nut_dong_ket_qua').addEventListener('click', dong_modal_ket_qua);
 
 function xu_ly_nhay(rowChoice) {
     let p = playersList[myId];
@@ -265,6 +430,8 @@ function xu_ly_nhay(rowChoice) {
     let targetY = (rowChoice === 1) ? topRowY : bottomRowY;
     
     if (isSafe) {
+        da_dung_goi_y_buoc_nay = false;
+
         let updates = {
             [`players/${myId}/current_step`]: nextStep,
             [`players/${myId}/x`]: targetX,
@@ -361,5 +528,62 @@ function vong_lap_game() {
         });
     }
     
+    // Xử lý và vẽ nhân vật gợi ý
+    if (anh_goi_y.complete && anh_goi_y.width > 0) {
+        let fw = anh_goi_y.width / 5;
+        let fh = anh_goi_y.height;
+        
+        if (nhan_vat_goi_y.state === 'moving_to_player' || nhan_vat_goi_y.state === 'moving_to_start') {
+            let dx = nhan_vat_goi_y.targetX - nhan_vat_goi_y.x;
+            let dy = nhan_vat_goi_y.targetY - nhan_vat_goi_y.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            
+            if (dist > nhan_vat_goi_y.speed) {
+                nhan_vat_goi_y.x += (dx / dist) * nhan_vat_goi_y.speed;
+                nhan_vat_goi_y.y += (dy / dist) * nhan_vat_goi_y.speed;
+                
+                // Animation loop
+                if (Date.now() - nhan_vat_goi_y.lastFrameTime > 80) {
+                    nhan_vat_goi_y.frame = (nhan_vat_goi_y.frame + 1) % 5;
+                    nhan_vat_goi_y.lastFrameTime = Date.now();
+                }
+            } else {
+                nhan_vat_goi_y.x = nhan_vat_goi_y.targetX;
+                nhan_vat_goi_y.y = nhan_vat_goi_y.targetY;
+                nhan_vat_goi_y.frame = 0; // Đứng im
+                
+                if (nhan_vat_goi_y.state === 'moving_to_player') {
+                    nhan_vat_goi_y.state = 'waiting_action';
+                    document.getElementById('modal_xac_nhan_goi_y').style.display = 'flex';
+                } else if (nhan_vat_goi_y.state === 'moving_to_start') {
+                    nhan_vat_goi_y.state = 'idle';
+                }
+            }
+        } else {
+            nhan_vat_goi_y.frame = 0; // Đứng im khi idle hoặc waiting
+        }
+        
+        ctx.drawImage(anh_goi_y, nhan_vat_goi_y.frame * fw, 0, fw, fh, nhan_vat_goi_y.x, nhan_vat_goi_y.y, nhan_vat_goi_y.width, nhan_vat_goi_y.height);
+    }
+    
+    // Xử lý và vẽ hiệu ứng điểm số bay lên
+    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+        let ft = floatingTexts[i];
+        ft.y -= 1; // Di chuyển chữ lên trên
+        ft.opacity -= 0.015; // Mờ dần
+        
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, ft.opacity);
+        ctx.font = 'bold 22px PixelKVN, Arial';
+        ctx.fillStyle = '#ff3333';
+        ctx.textAlign = 'center';
+        ctx.fillText(ft.text, ft.x, ft.y);
+        ctx.restore();
+        
+        if (ft.opacity <= 0) {
+            floatingTexts.splice(i, 1);
+        }
+    }
+
     requestAnimationFrame(vong_lap_game);
 }

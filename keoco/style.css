@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'PixelKVN';
-    src: url('../denxanhdendo/font/kvn-97.ttf') format('truetype');
+    src: url('../font/kvn-97.ttf') format('truetype');
 }
 
 body {
@@ -35,6 +35,7 @@ body {
     position: absolute; z-index: 20; top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
 .khung_giao_dien h2 { color: #ff007f; margin-top: 0; font-size: 32px; }
+.khung_giao_dien h3 { margin-top: 0; margin-bottom: 20px; font-size: 24px; text-shadow: 1px 1px 2px #000; }
 .khung_giao_dien ul { list-style: none; padding: 0; text-align: left; font-size: 20px; }
-.khung_giao_dien ul li { margin: 10px 0; padding: 10px; background: #222; border-radius: 5px; display: flex; justify-content: space-between; }
+.khung_giao_dien ul li { margin: 10px 0; padding: 10px; background: #333; border-radius: 5px; display: flex; justify-content: space-between; }
 #nut_ve_sanh { margin-top: 20px; padding: 10px 20px; font-family: 'PixelKVN'; font-size: 18px; background: #ff007f; color: white; border: none; border-radius: 5px; cursor: pointer; }

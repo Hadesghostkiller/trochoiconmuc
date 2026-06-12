@@ -16,6 +16,36 @@
         </div>
     </div>
 
+    <!-- Modals cho Gợi ý -->
+    <div id="modal_xac_nhan_goi_y" class="lop_phu_modal" style="display: none;">
+        <div class="khung_modal">
+            <h3>Gợi ý Màn 2</h3>
+            <p>Trả 40 điểm để có gợi ý?</p>
+            <button id="nut_co_goi_y" style="background: #00ff00; color: black;">Có</button>
+            <button id="nut_khong_goi_y">Không</button>
+        </div>
+    </div>
+
+    <div id="modal_cau_hoi_goi_y" class="lop_phu_modal" style="display: none;">
+        <div class="khung_modal" style="min-width: 500px;">
+            <h3 id="tieu_de_cau_hoi">Câu hỏi 1/10</h3>
+            <div id="thoi_gian_tra_loi" style="color: yellow; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Thời gian: 30s</div>
+            <p id="noi_dung_cau_hoi" style="font-size: 18px; margin: 20px 0;"></p>
+            <div id="vung_dap_an" style="display: flex; justify-content: center; gap: 15px;">
+                <!-- Nút đáp án sẽ được tạo bằng JS -->
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_ket_qua_goi_y" class="lop_phu_modal" style="display: none;">
+        <div class="khung_modal">
+            <h3>Kết quả Gợi ý</h3>
+            <p id="chuoi_ket_qua_goi_y" style="font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #00ff00;"></p>
+            <p style="font-size: 14px; color: #ccc;">(1: Kính trên an toàn, 0: Kính dưới an toàn, ?: Trả lời sai)</p>
+            <button id="nut_dong_ket_qua">ĐÃ HIỂU</button>
+        </div>
+    </div>
+
     <div id="ui_thoat">
         <button id="nut_thoat">THOÁT PHÒNG</button>
     </div>
