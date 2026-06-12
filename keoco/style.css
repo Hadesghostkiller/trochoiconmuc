@@ -1,0 +1,40 @@
+@font-face {
+    font-family: 'PixelKVN';
+    src: url('../denxanhdendo/font/kvn-97.ttf') format('truetype');
+}
+
+body {
+    margin: 0; padding: 0; background-color: #111; color: white;
+    font-family: 'PixelKVN', sans-serif; display: flex;
+    justify-content: center; align-items: center; height: 100vh; overflow: hidden;
+}
+
+#vung_chua_game { position: relative; box-shadow: 0 0 20px #000; background: #333; }
+#man_hinh_game { display: block; }
+
+#ui_thoat { position: absolute; top: 20px; right: 20px; z-index: 10; }
+#nut_thoat { padding: 10px 20px; background-color: #ff0044; color: white; border: none; font-family: 'PixelKVN'; cursor: pointer; border-radius: 5px; }
+
+#ui_keoco {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    z-index: 10; text-align: center;
+}
+#luot_cua_ai { font-size: 32px; margin-bottom: 10px; color: #ffd700; text-shadow: 2px 2px 4px #000; animation: blink 1s infinite;}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+#nut_spam {
+    background: #ff007f; border: 4px solid white; border-radius: 15px; color: white;
+    cursor: pointer; padding: 20px 40px; font-family: 'PixelKVN'; font-size: 28px;
+    box-shadow: 0 5px 15px rgba(255,0,127,0.5); transition: 0.1s;
+}
+#nut_spam:active { transform: scale(0.9); background: #e6006f; }
+
+.khung_giao_dien {
+    background: rgba(0, 0, 0, 0.85); border: 3px solid #ff007f; padding: 30px;
+    border-radius: 10px; text-align: center; min-width: 400px;
+    position: absolute; z-index: 20; top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.khung_giao_dien h2 { color: #ff007f; margin-top: 0; font-size: 32px; }
+.khung_giao_dien ul { list-style: none; padding: 0; text-align: left; font-size: 20px; }
+.khung_giao_dien ul li { margin: 10px 0; padding: 10px; background: #222; border-radius: 5px; display: flex; justify-content: space-between; }
+#nut_ve_sanh { margin-top: 20px; padding: 10px 20px; font-family: 'PixelKVN'; font-size: 18px; background: #ff007f; color: white; border: none; border-radius: 5px; cursor: pointer; }
